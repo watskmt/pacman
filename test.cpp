@@ -25,9 +25,9 @@ const char level[CELLS][CELLS + 1] = {
 	"#..................#",
 	"#..................#",
 	"#..................#",
-	"#..................#",
-	"#..................#",
-	"#..................#",
+	"#........#.........#",
+	"#........#.........#",
+	"#........#.........#",
 	"#...##########.....#",
 	"#..................#",
 	"#..................#",
@@ -41,45 +41,45 @@ const char level[CELLS][CELLS + 1] = {
 	"####################",
 };
 
-// ƒvƒƒOƒ‰ƒ€‚Í WinMain ‚©‚çn‚Ü‚è‚Ü‚·
+// ãƒ—ãƒ­ã‚°ãƒ©ãƒ ã¯ WinMain ã‹ã‚‰å§‹ã¾ã‚Šã¾ã™
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
 	initMap();
 
-	if (DxLib_Init() == -1)		// ‚c‚wƒ‰ƒCƒuƒ‰ƒŠ‰Šú‰»ˆ—
+	if (DxLib_Init() == -1)		// ï¼¤ï¼¸ãƒ©ã‚¤ãƒ–ãƒ©ãƒªåˆæœŸåŒ–å‡¦ç†
 	{
-		return -1;			// ƒGƒ‰[‚ª‹N‚«‚½‚ç’¼‚¿‚ÉI—¹
+		return -1;			// ã‚¨ãƒ©ãƒ¼ãŒèµ·ããŸã‚‰ç›´ã¡ã«çµ‚äº†
 	}
 
-	ChangeWindowMode(TRUE);		// ƒEƒBƒ“ƒhƒEƒ‚[ƒh‚Éİ’è
+	ChangeWindowMode(TRUE);		// ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ãƒ¢ãƒ¼ãƒ‰ã«è¨­å®š
 	SetMouseDispFlag(TRUE);
-	SetGraphMode(WINDOWSIZE, WINDOWSIZE, 32); // ‰æ–ÊƒTƒCƒY‚ğ640x480AF[“x32ƒrƒbƒg‚Éİ’è
+	SetGraphMode(WINDOWSIZE, WINDOWSIZE, 32); // ç”»é¢ã‚µã‚¤ã‚ºã‚’640x480ã€è‰²æ·±åº¦32ãƒ“ãƒƒãƒˆã«è¨­å®š
 
-	WaitKey();				// ƒL[“ü—Í‘Ò‚¿
+	WaitKey();				// ã‚­ãƒ¼å…¥åŠ›å¾…ã¡
 
 	unsigned int cy = GetColor(200, 200, 100);
 
-	int x = 0, y = 0; //@ƒLƒƒƒ‰ƒNƒ^[‚ÌˆÊ’uiÀ•W‚Å‚Í‚È‚­Aƒ}ƒX–Ú‚ÌˆÊ’uj
-	int a = 0; // 0:‰EA1:‰ºA2:¶A3:ã
+	int x = 0, y = 0; //ã€€ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã®ä½ç½®ï¼ˆåº§æ¨™ã§ã¯ãªãã€ãƒã‚¹ç›®ã®ä½ç½®ï¼‰
+	int a = 0; // 0:å³ã€1:ä¸‹ã€2:å·¦ã€3:ä¸Š
 
 	int handle = LoadGraph("chara1.png");
 	
 	do {
-		ClearDrawScreen(); // ‰æ–Ê‚ğƒNƒŠƒA
+		ClearDrawScreen(); // ç”»é¢ã‚’ã‚¯ãƒªã‚¢
 		drawBoard();
 		drawCharacter(x, y, a, handle);
 
 		int key = keyCheck();
 		
 		moveCharacter(key, &x, &y, &a);
-		ProcessMessage();        // ƒƒbƒZ[ƒWˆ—
+		ProcessMessage();        // ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸å‡¦ç†
 	} while (!CheckHitKey(KEY_INPUT_ESCAPE));
 
-	WaitKey();				// ƒL[“ü—Í‘Ò‚¿
+	WaitKey();				// ã‚­ãƒ¼å…¥åŠ›å¾…ã¡
 
-	DxLib_End();				// ‚c‚wƒ‰ƒCƒuƒ‰ƒŠg—p‚ÌI—¹ˆ—
+	DxLib_End();				// ï¼¤ï¼¸ãƒ©ã‚¤ãƒ–ãƒ©ãƒªä½¿ç”¨ã®çµ‚äº†å‡¦ç†
 
-	return 0;				// ƒ\ƒtƒg‚ÌI—¹ 
+	return 0;				// ã‚½ãƒ•ãƒˆã®çµ‚äº† 
 }
 
 void initMap(void) {
@@ -108,18 +108,18 @@ void drawBoard() {
 				c = GetColor(50, 50, 100);
 				fillFlag = FALSE;
 			}
-			DrawBox(j * CELLSIZE, i * CELLSIZE, j * CELLSIZE + CELLSIZE, i * CELLSIZE + CELLSIZE, c, fillFlag);    // lŠpŒ`‚ğ•`‰æ
+			DrawBox(j * CELLSIZE, i * CELLSIZE, j * CELLSIZE + CELLSIZE, i * CELLSIZE + CELLSIZE, c, fillFlag);    // å››è§’å½¢ã‚’æç”»
 		}
 
 }
 
 void drawCharacter(int x, int y, int a, int handle) {
 	double rad = a == 2 ? 0 : (double)a * PI / 2.0;
-	int turn = a == 2 ? TRUE : FALSE; // ¶Œü‚«‚Ì‚Æ‚«‚¾‚¯”½“]
+	int turn = a == 2 ? TRUE : FALSE; // å·¦å‘ãã®ã¨ãã ã‘åè»¢
 	DrawRotaGraph3(x * CELLSIZE + CELLSIZE / 2, y * CELLSIZE + CELLSIZE / 2, 150, 150, (double)CELLSIZE / 300, (double)CELLSIZE / 300, rad, handle, TRUE, turn);
 }
 
-// –ß‚è’lF@‚OF‰Ÿ‚³‚ê‚Ä‚¢‚È‚¢A1FãA2F‰ºA3F¶A4F‰E
+// æˆ»ã‚Šå€¤ï¼šã€€ï¼ï¼šæŠ¼ã•ã‚Œã¦ã„ãªã„ã€1ï¼šä¸Šã€2ï¼šä¸‹ã€3ï¼šå·¦ã€4ï¼šå³
 int keyCheck() {
 	static int upKey = 0, downKey = 0, leftKey = 0, rightKey = 0;
 
