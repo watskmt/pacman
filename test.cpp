@@ -59,7 +59,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	unsigned int cy = GetColor(200, 200, 100);
 
-	int x = 0, y = 0; //　キャラクターの位置（座標ではなく、マス目の位置）
+	int x = 1, y = 2; //　キャラクターの位置（座標ではなく、マス目の位置）
 	int a = 0; // 0:右、1:下、2:左、3:上
 
 	int handle = LoadGraph("chara1.png");
