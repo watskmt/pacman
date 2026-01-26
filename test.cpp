@@ -101,7 +101,7 @@ void drawBoard() {
 	for (int i = 0; i < CELLS; i++)
 		for (int j = 0; j < CELLS; j++) {
 			if (board[j][i] == CELL_WALL) {
-				c = GetColor(100, 100, 255);
+			 c = GetColor(255, 100, 255);
 				fillFlag = TRUE;
 			}
 			else {
