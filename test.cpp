@@ -1,12 +1,12 @@
-#include "DxLib.h"
+﻿#include "DxLib.h"
 
 typedef enum {
-	CELL_PATH=0,
-	CELL_WALL=1
+	CELL_PATH = 0,
+	CELL_WALL = 1
 } CellType;
 
 int keyCheck(void);
-void moveCharacter(int key, int *x, int *y, int *a);
+void moveCharacter(int key, int* x, int* y, int* a);
 void drawBoard();
 void drawCharacter(int x, int y, int a, int handle);
 void initMap(void);
@@ -20,7 +20,6 @@ CellType board[CELLS][CELLS] = { CELL_PATH };
 
 const char level[CELLS][CELLS + 1] = {
 	"####################",
-<<<<<<< HEAD
 	"#...#..............#",
 	"#...#..............#",
 	"#...############...#",
@@ -28,14 +27,6 @@ const char level[CELLS][CELLS + 1] = {
 	"#..............#...#",
 	"#..................#",
 	"#..................#",
-	"#..................#",
-	"#........#.........#",
-	"#........#.........#",
-	"#........#.........#",
-	"#...##########.....#",
-	"#..................#",
-	"#.....###..........#",
-=======
 	"#..................#",
 	"#..................#",
 	"#..................#",
@@ -46,14 +37,6 @@ const char level[CELLS][CELLS + 1] = {
 	"#....#........#....#",
 	"#......#.....#.....#",
 	"#.........#........#",
-	"#..................#",
-	"#..................#",
-	"#.#########........#",
-	"#..................#",
->>>>>>> test1
-	"#..................#",
-	"#..................#",
-	"#..................#",
 	"#..................#",
 	"####################",
 };
@@ -92,13 +75,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		ProcessMessage();        // メッセージ処理
 	} while (!CheckHitKey(KEY_INPUT_ESCAPE));
 
-<<<<<<< HEAD
-	WaitKey();				// キー入力待ち
-=======
-	Waitkey();				// �L�[���͑҂�
->>>>>>> test1
+		WaitKey();				// キー入力待ち
 
-	DxLib_End();				// ＤＸライブラリ使用の終了処理
+		DxLib_End();				// ＤＸライブラリ使用の終了処理
 
 	return 0;				// ソフトの終了 
 }
@@ -118,7 +97,7 @@ void initMap(void) {
 void drawBoard() {
 	unsigned int c;
 	int fillFlag;
-		
+
 	for (int i = 0; i < CELLS; i++)
 		for (int j = 0; j < CELLS; j++) {
 			if (board[j][i] == CELL_WALL) {
@@ -171,7 +150,7 @@ int keyCheck() {
 	return key;
 }
 
-void moveCharacter(int key, int* x, int* y, int *a)
+void moveCharacter(int key, int* x, int* y, int* a)
 {
 	int prevX = *x;
 	int prevY = *y;
