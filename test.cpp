@@ -35,7 +35,7 @@ const char level[CELLS][CELLS + 1] = {
 	"#..................#",
 	"#.....###..........#",
 	"#..................#",
-	"#..................#",
+	"#......####........#",
 	"#..................#",
 	"#..................#",
 	"####################",
@@ -59,7 +59,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	unsigned int cy = GetColor(200, 200, 100);
 
-	int x = 0, y = 0; //　キャラクターの位置（座標ではなく、マス目の位置）
+	int x = 1, y = 2; //　キャラクターの位置（座標ではなく、マス目の位置）
 	int a = 0; // 0:右、1:下、2:左、3:上
 
 	int handle = LoadGraph("chara1.png");
@@ -101,7 +101,7 @@ void drawBoard() {
 	for (int i = 0; i < CELLS; i++)
 		for (int j = 0; j < CELLS; j++) {
 			if (board[j][i] == CELL_WALL) {
-				c = GetColor(100, 100, 255);
+			 c = GetColor(255, 100, 255);
 				fillFlag = TRUE;
 			}
 			else {
@@ -175,6 +175,10 @@ void moveCharacter(int key, int* x, int* y, int *a)
 		break;
 	}
 	if (*x < 0 || *x >= CELLS || *y < 0 || *y >= CELLS) {
+		*x = prevX;
+		*y = prevY;
+	}
+	if (board[*x][*y] == CELL_WALL) {
 		*x = prevX;
 		*y = prevY;
 	}
