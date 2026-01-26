@@ -178,4 +178,8 @@ void moveCharacter(int key, int* x, int* y, int *a)
 		*x = prevX;
 		*y = prevY;
 	}
+	if (board[*x][*y] == CELL_WALL) {
+		*x = prevX;
+		*y = prevY;
+	}
 }
