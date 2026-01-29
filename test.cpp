@@ -1,12 +1,12 @@
-#include "DxLib.h"
+﻿#include "DxLib.h"
 
 typedef enum {
-	CELL_PATH=0,
-	CELL_WALL=1
+	CELL_PATH = 0,
+	CELL_WALL = 1
 } CellType;
 
 int keyCheck(void);
-void moveCharacter(int key, int *x, int *y, int *a);
+void moveCharacter(int key, int* x, int* y, int* a);
 void drawBoard();
 void drawCharacter(int x, int y, int a, int handle);
 void initMap(void);
@@ -37,6 +37,12 @@ const char level[CELLS][CELLS + 1] = {
 	"#..................#",
 	"#......####........#",
 	"#..................#",
+	"#...####....####...#",
+	"#..#.....##.....#..#",
+	"#...#..........#...#",
+	"#....#........#....#",
+	"#......#.....#.....#",
+	"#.........#........#",
 	"#..................#",
 	"##########..########",
 };
@@ -63,21 +69,21 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	int a = 0; // 0:右、1:下、2:左、3:上
 
 	int handle = LoadGraph("chara1.png");
-	
+
 	do {
 		ClearDrawScreen(); // 画面をクリア
 		drawBoard();
 		drawCharacter(x, y, a, handle);
 
 		int key = keyCheck();
-		
+
 		moveCharacter(key, &x, &y, &a);
 		ProcessMessage();        // メッセージ処理
 	} while (!CheckHitKey(KEY_INPUT_ESCAPE));
 
-	WaitKey();				// キー入力待ち
+		WaitKey();				// キー入力待ち
 
-	DxLib_End();				// ＤＸライブラリ使用の終了処理
+		DxLib_End();				// ＤＸライブラリ使用の終了処理
 
 	return 0;				// ソフトの終了 
 }
@@ -97,7 +103,7 @@ void initMap(void) {
 void drawBoard() {
 	unsigned int c;
 	int fillFlag;
-		
+
 	for (int i = 0; i < CELLS; i++)
 		for (int j = 0; j < CELLS; j++) {
 			if (board[j][i] == CELL_WALL) {
@@ -150,7 +156,7 @@ int keyCheck() {
 	return key;
 }
 
-void moveCharacter(int key, int* x, int* y, int *a)
+void moveCharacter(int key, int* x, int* y, int* a)
 {
 	int prevX = *x;
 	int prevY = *y;
