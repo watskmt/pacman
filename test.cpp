@@ -106,6 +106,10 @@ void drawBoard() {
 			 c = GetColor(255, 100, 255);
 				fillFlag = TRUE;
 			}
+			else if (board[j][i] == CELL_ITEM) {  
+				c = GetColor(255, 255, 0);          
+				fillFlag = TRUE;
+			}
 			else {
 				c = GetColor(50, 50, 100);
 				fillFlag = FALSE;
