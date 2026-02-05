@@ -1,5 +1,7 @@
 ﻿#include "DxLib.h"
 
+
+
 typedef enum {
 	CELL_PATH = 0,
 	CELL_WALL = 1,
@@ -16,6 +18,11 @@ void initMap(void);
 #define CELLSIZE 40
 #define CELLS WINDOWSIZE / CELLSIZE
 #define PI    3.1415926535897932384626433832795f
+#define TIME_LIMIT 30   // 制限時間（秒）
+
+int startTime;   // 開始時刻（ミリ秒）
+int remainTime;  // 残り時間（秒）
+
 CellType board[CELLS][CELLS] = { CELL_PATH };
 
 
@@ -64,11 +71,31 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	int a = 0; // 0:右、1:下、2:左、3:上
 
 	int handle = LoadGraph("chara1.png");
+	startTime = GetNowCount();
 
 	do {
 		ClearDrawScreen(); // 画面をクリア
+
+		// ==== タイマー更新 ====
+		int now = GetNowCount();
+		int elapsed = (now - startTime) / 1000;
+		remainTime = TIME_LIMIT - elapsed;
+		if (remainTime < 0) remainTime = 0;
+
 		drawBoard();
 		drawCharacter(x, y, a, handle);
+
+		// ==== タイマー表示 ====
+		DrawFormatString(10, 10, GetColor(255, 255, 255),
+			"TIME : %d", remainTime);
+
+		if (remainTime == 0) {
+			DrawFormatString(300, 380, GetColor(255, 0, 0),
+				"TIME UP!");
+			ScreenFlip();
+			WaitTimer(2000);
+			break;
+		}
 
 		int key = keyCheck();
 
@@ -194,3 +221,5 @@ void moveCharacter(int key, int* x, int* y, int* a)
 		board[*x][*y] = CELL_PATH;
 	}
 }
+
+
