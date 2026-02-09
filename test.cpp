@@ -43,6 +43,10 @@ const char level[CELLS][CELLS + 1] = {
 	"##########..########",
 };
 
+int startX = 1, startY = 2; //　キャラクター初期位置
+int x = startX, y = startY; //　キャラクターの位置（座標ではなく、マス目の位置）
+int ex = 6, ey = 13; //敵の初期値
+
 // プログラムは WinMain から始まります
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
@@ -61,9 +65,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	unsigned int cy = GetColor(200, 200, 100);
 
-	int x = 1, y = 2; //　キャラクターの位置（座標ではなく、マス目の位置）
-	int a = 0; // 0:右、1:下、2:左、3:上
-	int ex = 5, ey = 12; //敵の初期値
+	int a = 0; // 0:右、1:下、2:左、3:上	
 	int ea = 0;
 	int handle = LoadGraph("chara1.png");
 	int teki = LoadGraph("teki.png");
@@ -199,5 +201,11 @@ void moveCharacter(int key, int* x, int* y, int* a)
 	/*アイテム取得の処理*/
 	if (board[*x][*y] == CELL_ITEM) {
 		board[*x][*y] = CELL_PATH;
+	}
+	/* 敵との当たり判定 */
+	if (*x == ex && *y == ey) {
+		*x = startX;
+		*y = startY;
+		*a = 0;
 	}
 }
