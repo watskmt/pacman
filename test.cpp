@@ -189,19 +189,37 @@ void moveCharacter(int key, int* x, int* y, int* a)
 	default:
 		break;
 	}
+
+	// 【復活！】画面外へはみ出した時のワープ処理
+	if (*x < 0) {
+		*x = CELLS - 1;
+	}
+	else if (*x >= CELLS) {
+		*x = 0;
+	}
+	else if (*y < 0) {
+		*y = CELLS - 1;
+	}
+	else if (*y >= CELLS) {
+		*y = 0;
+	}
+
 	if (*x < 0 || *x >= CELLS || *y < 0 || *y >= CELLS) {
 		*x = prevX;
 		*y = prevY;
 	}
+
 	/*壁の当たり判定*/
 	if (board[*x][*y] == CELL_WALL) {
 		*x = prevX;
 		*y = prevY;
 	}
+
 	/*アイテム取得の処理*/
 	if (board[*x][*y] == CELL_ITEM) {
 		board[*x][*y] = CELL_PATH;
 	}
+
 	/* 敵との当たり判定 */
 	if (*x == ex && *y == ey) {
 		*x = startX;
