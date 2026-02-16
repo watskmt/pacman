@@ -189,10 +189,41 @@ void moveCharacter(int key, int* x, int* y, int* a)
 	default:
 		break;
 	}
+
+	// 左にはみ出したら右へ
+	if (*x < 0) {
+		*x = CELLS - 1;
+	}
+	// 右にはみ出したら左へ
+	else if (*x >= CELLS) {
+		*x = 0;
+	}
+	// 上にはみ出したら下へ
+	else if (*y < 0) {
+		*y = CELLS - 1;
+	}
+	// 下にはみ出したら上へ
+	else if (*y >= CELLS) {
+		*y = 0;
+	}
+
+	// ワープ先（または移動先）が壁なら、移動をキャンセルして元の位置に戻す
+	if (board[*x][*y] == CELL_WALL) {
+		*x = prevX;
+		*y = prevY;
+	}
+
+	// ワープ先（または移動先）が壁なら、移動をキャンセルして元の位置に戻す
+	if (board[*x][*y] == CELL_WALL) {
+		*x = prevX;
+		*y = prevY;
+	}
+
 	if (*x < 0 || *x >= CELLS || *y < 0 || *y >= CELLS) {
 		*x = prevX;
 		*y = prevY;
 	}
+
 	/*壁の当たり判定*/
 	if (board[*x][*y] == CELL_WALL) {
 		*x = prevX;
