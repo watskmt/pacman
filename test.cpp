@@ -7,11 +7,12 @@ typedef enum {
 } CellType;
 
 int keyCheck(void);
-void moveCharacter(int key, int* x, int* y, int* a);
+void moveCharacter(int key, int* x, int* y, int* a, int* itemCount);
 void drawBoard();
 void drawCharacter(int x, int y, int a, int handle);
 void drawteki(int xe, int ye, int ea, int handle);
 void initMap(void);
+int getTotalItems(void);
 
 #define WINDOWSIZE 800
 #define CELLSIZE 40
@@ -65,18 +66,30 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	unsigned int cy = GetColor(200, 200, 100);
 
-	int a = 0; // 0:右、1:下、2:左、3:上	
-	int ea = 0;
+	int x = 1, y = 2; //　キャラクターの位置（座標ではなく、マス目の位置）
+	int a = 0; // 0:右、1:下、2:左、3:上
+
+	int itemCount = getTotalItems(); // マップ内に配置されたアイテムの総数を取得
+
 	int handle = LoadGraph("chara1.png");
 	int teki = LoadGraph("teki.png");
 	do {
 		ClearDrawScreen(); // 画面をクリア
 		drawBoard();
 		drawCharacter(x, y, a, handle);
-		drawteki(ex, ey, ea, teki);
+
+		if (itemCount == 0) {	//ゲームクリア判定
+			SetFontSize(64);
+			const char* str = "GAME CLEAR!";
+			int w = GetDrawStringWidth(str, strlen(str));
+			DrawString((WINDOWSIZE - w) / 2, (WINDOWSIZE - 64) / 2, str, GetColor(255, 255, 0));
+			ScreenFlip();
+			break;
+		}
+
 		int key = keyCheck();
 
-		moveCharacter(key, &x, &y, &a);
+		moveCharacter(key, &x, &y, &a, &itemCount);
 		ProcessMessage();        // メッセージ処理
 	} while (!CheckHitKey(KEY_INPUT_ESCAPE));
 
@@ -165,7 +178,7 @@ int keyCheck() {
 	return key;
 }
 
-void moveCharacter(int key, int* x, int* y, int* a)
+void moveCharacter(int key, int* x, int* y, int* a, int* itemCount)
 {
 	int prevX = *x;
 	int prevY = *y;
@@ -201,6 +214,19 @@ void moveCharacter(int key, int* x, int* y, int* a)
 	/*アイテム取得の処理*/
 	if (board[*x][*y] == CELL_ITEM) {
 		board[*x][*y] = CELL_PATH;
+		(*itemCount)--;
+	}
+}
+
+int getTotalItems()
+{
+	int count = 0;
+	for (int y = 0; y < CELLS; y++) {
+		for (int x = 0; x < CELLS; x++) {
+			if (board[x][y] == CELL_ITEM) {
+				count++;
+			}
+		}
 	}
 	/* 敵との当たり判定 */
 	if (*x == ex && *y == ey) {
@@ -208,4 +234,7 @@ void moveCharacter(int key, int* x, int* y, int* a)
 		*y = startY;
 		*a = 0;
 	}
+
+  return count;
 }
+
