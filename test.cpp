@@ -18,6 +18,11 @@ int getTotalItems(void);
 #define CELLSIZE 40
 #define CELLS WINDOWSIZE / CELLSIZE
 #define PI    3.1415926535897932384626433832795f
+#define TIME_LIMIT 30   // 制限時間（秒）
+
+int startTime;   // 開始時刻（ミリ秒）
+int remainTime;  // 残り時間（秒）
+
 CellType board[CELLS][CELLS] = { CELL_PATH };
 
 
@@ -47,6 +52,7 @@ const char level[CELLS][CELLS + 1] = {
 int startX = 1, startY = 2; //　キャラクター初期位置
 int x = startX, y = startY; //　キャラクターの位置（座標ではなく、マス目の位置）
 int ex = 6, ey = 13; //敵の初期値
+int life = 3; //ライフの追加
 
 // プログラムは WinMain から始まります
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
@@ -72,11 +78,31 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	int itemCount = getTotalItems(); // マップ内に配置されたアイテムの総数を取得
 
 	int handle = LoadGraph("chara1.png");
+	startTime = GetNowCount();
 	int teki = LoadGraph("teki.png");
 	do {
 		ClearDrawScreen(); // 画面をクリア
+
+		// ==== タイマー更新 ====
+		int now = GetNowCount();
+		int elapsed = (now - startTime) / 1000;
+		remainTime = TIME_LIMIT - elapsed;
+		if (remainTime < 0) remainTime = 0;
+
 		drawBoard();
 		drawCharacter(x, y, a, handle);
+
+		// ==== タイマー表示 ====
+		DrawFormatString(10, 10, GetColor(255, 255, 255),
+			"TIME : %d", remainTime);
+
+		if (remainTime == 0) {
+			DrawFormatString(300, 380, GetColor(255, 0, 0),
+				"TIME UP!");
+			ScreenFlip();
+			WaitTimer(2000);
+			break;
+		}
 
 		if (itemCount == 0) {	//ゲームクリア判定
 			SetFontSize(64);
@@ -91,7 +117,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		moveCharacter(key, &x, &y, &a, &itemCount);
 		ProcessMessage();        // メッセージ処理
-	} while (!CheckHitKey(KEY_INPUT_ESCAPE));
+	} while (!CheckHitKey(KEY_INPUT_ESCAPE) && life >0);
 
 		WaitKey();				// キー入力待ち
 
@@ -218,6 +244,7 @@ void moveCharacter(int key, int* x, int* y, int* a, int* itemCount)
 	}
 	/* 敵との当たり判定 */
 	if (*x == ex && *y == ey) {
+		life--;
 		*x = startX;
 		*y = startY;
 		*a = 0;
