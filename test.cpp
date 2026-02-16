@@ -10,6 +10,7 @@ int keyCheck(void);
 void moveCharacter(int key, int* x, int* y, int* a, int* itemCount);
 void drawBoard();
 void drawCharacter(int x, int y, int a, int handle);
+void drawteki(int xe, int ye, int ea, int handle);
 void initMap(void);
 int getTotalItems(void);
 
@@ -43,6 +44,10 @@ const char level[CELLS][CELLS + 1] = {
 	"##########..########",
 };
 
+int startX = 1, startY = 2; //　キャラクター初期位置
+int x = startX, y = startY; //　キャラクターの位置（座標ではなく、マス目の位置）
+int ex = 6, ey = 13; //敵の初期値
+
 // プログラムは WinMain から始まります
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
@@ -67,7 +72,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	int itemCount = getTotalItems(); // マップ内に配置されたアイテムの総数を取得
 
 	int handle = LoadGraph("chara1.png");
-
+	int teki = LoadGraph("teki.png");
 	do {
 		ClearDrawScreen(); // 画面をクリア
 		drawBoard();
@@ -135,6 +140,11 @@ void drawCharacter(int x, int y, int a, int handle) {
 	double rad = a == 2 ? 0 : (double)a * PI / 2.0;
 	int turn = a == 2 ? TRUE : FALSE; // 左向きのときだけ反転
 	DrawRotaGraph3(x * CELLSIZE + CELLSIZE / 2, y * CELLSIZE + CELLSIZE / 2, 150, 150, (double)CELLSIZE / 300, (double)CELLSIZE / 300, rad, handle, TRUE, turn);
+}
+void drawteki(int xe, int ye, int a, int handle) {
+	double rad = a == 2 ? 0 : (double)a * PI / 2.0;
+	int turn = a == 2 ? TRUE : FALSE; // 左向きのときだけ反転
+	DrawRotaGraph3(xe * CELLSIZE + CELLSIZE / 2, ye * CELLSIZE + CELLSIZE / 2, 150, 150, (double)CELLSIZE / 400, (double)CELLSIZE / 400, rad, handle, TRUE, turn);
 }
 
 // 戻り値：　０：押されていない、1：上、2：下、3：左、4：右
@@ -218,6 +228,13 @@ int getTotalItems()
 			}
 		}
 	}
-	return count;
+	/* 敵との当たり判定 */
+	if (*x == ex && *y == ey) {
+		*x = startX;
+		*y = startY;
+		*a = 0;
+	}
+
+  return count;
 }
 
