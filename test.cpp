@@ -8,16 +8,22 @@ typedef enum {
 } CellType;
 
 int keyCheck(void);
-void moveCharacter(int key, int* x, int* y, int* a);
+void moveCharacter(int key, int* x, int* y, int* a, int* itemCount);
 void drawBoard();
 void drawCharacter(int x, int y, int a, int handle);
 void drawteki(int xe, int ye, int ea, int handle);
 void initMap(void);
+int getTotalItems(void);
 
 #define WINDOWSIZE 800
 #define CELLSIZE 40
 #define CELLS WINDOWSIZE / CELLSIZE
 #define PI    3.1415926535897932384626433832795f
+#define TIME_LIMIT 30   // 制限時間（秒）
+
+int startTime;   // 開始時刻（ミリ秒）
+int remainTime;  // 残り時間（秒）
+
 CellType board[CELLS][CELLS] = { CELL_PATH };
 
 
@@ -68,18 +74,50 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	unsigned int cy = GetColor(200, 200, 100);
 
-	int a = 0; // 0:右、1:下、2:左、3:上	
-	int ea = 0;
+	int x = 1, y = 2; //　キャラクターの位置（座標ではなく、マス目の位置）
+	int a = 0; // 0:右、1:下、2:左、3:上
+
+	int itemCount = getTotalItems(); // マップ内に配置されたアイテムの総数を取得
+
 	int handle = LoadGraph("chara1.png");
+	startTime = GetNowCount();
 	int teki = LoadGraph("teki.png");
 	do {
 		ClearDrawScreen(); // 画面をクリア
+
+		// ==== タイマー更新 ====
+		int now = GetNowCount();
+		int elapsed = (now - startTime) / 1000;
+		remainTime = TIME_LIMIT - elapsed;
+		if (remainTime < 0) remainTime = 0;
+
 		drawBoard();
 		drawCharacter(x, y, a, handle);
-		drawteki(ex, ey, ea, teki);
+
+		// ==== タイマー表示 ====
+		DrawFormatString(10, 10, GetColor(255, 255, 255),
+			"TIME : %d", remainTime);
+
+		if (remainTime == 0) {
+			DrawFormatString(300, 380, GetColor(255, 0, 0),
+				"TIME UP!");
+			ScreenFlip();
+			WaitTimer(2000);
+			break;
+		}
+
+		if (itemCount == 0) {	//ゲームクリア判定
+			SetFontSize(64);
+			const char* str = "GAME CLEAR!";
+			int w = GetDrawStringWidth(str, strlen(str));
+			DrawString((WINDOWSIZE - w) / 2, (WINDOWSIZE - 64) / 2, str, GetColor(255, 255, 0));
+			ScreenFlip();
+			break;
+		}
+
 		int key = keyCheck();
 
-		moveCharacter(key, &x, &y, &a);
+		moveCharacter(key, &x, &y, &a, &itemCount);
 		ProcessMessage();        // メッセージ処理
 
 
@@ -182,7 +220,7 @@ int keyCheck() {
 	return key;
 }
 
-void moveCharacter(int key, int* x, int* y, int* a)
+void moveCharacter(int key, int* x, int* y, int* a, int* itemCount)
 {
 	int prevX = *x;
 	int prevY = *y;
@@ -225,7 +263,8 @@ void moveCharacter(int key, int* x, int* y, int* a)
 
 	/*アイテム取得の処理*/
 	if (board[*x][*y] == CELL_ITEM) {
-		board[*x][*y] = CELL_PATH; 
+		board[*x][*y] = CELL_PATH;
+		(*itemCount)--;
 	}
 	/* 敵との当たり判定 */
 	if (*x == ex && *y == ey) {
@@ -243,3 +282,18 @@ void moveCharacter(int key, int* x, int* y, int* a)
 
 
 }
+
+int getTotalItems()
+{
+	int count = 0;
+	for (int y = 0; y < CELLS; y++) {
+		for (int x = 0; x < CELLS; x++) {
+			if (board[x][y] == CELL_ITEM) {
+				count++;
+			}
+		}
+	}
+
+  return count;
+}
+
