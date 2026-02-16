@@ -216,6 +216,12 @@ void moveCharacter(int key, int* x, int* y, int* a, int* itemCount)
 		board[*x][*y] = CELL_PATH;
 		(*itemCount)--;
 	}
+	/* 敵との当たり判定 */
+	if (*x == ex && *y == ey) {
+		*x = startX;
+		*y = startY;
+		*a = 0;
+	}
 }
 
 int getTotalItems()
@@ -227,12 +233,6 @@ int getTotalItems()
 				count++;
 			}
 		}
-	}
-	/* 敵との当たり判定 */
-	if (*x == ex && *y == ey) {
-		*x = startX;
-		*y = startY;
-		*a = 0;
 	}
 
   return count;
