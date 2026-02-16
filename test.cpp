@@ -52,7 +52,6 @@ const char level[CELLS][CELLS + 1] = {
 int startX = 1, startY = 2; //　キャラクター初期位置
 int x = startX, y = startY; //　キャラクターの位置（座標ではなく、マス目の位置）
 int ex = 6, ey = 13; //敵の初期値
-int life = 3; //ライフの追加
 
 // プログラムは WinMain から始まります
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
@@ -117,7 +116,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		moveCharacter(key, &x, &y, &a, &itemCount);
 		ProcessMessage();        // メッセージ処理
-	} while (!CheckHitKey(KEY_INPUT_ESCAPE) && life >0);
+	} while (!CheckHitKey(KEY_INPUT_ESCAPE));
 
 		WaitKey();				// キー入力待ち
 
@@ -244,7 +243,6 @@ void moveCharacter(int key, int* x, int* y, int* a, int* itemCount)
 	}
 	/* 敵との当たり判定 */
 	if (*x == ex && *y == ey) {
-		life--;
 		*x = startX;
 		*y = startY;
 		*a = 0;
