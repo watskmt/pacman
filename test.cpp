@@ -53,6 +53,7 @@ const char level[CELLS][CELLS + 1] = {
 int startX = 1, startY = 2; //　キャラクター初期位置
 int x = startX, y = startY; //　キャラクターの位置（座標ではなく、マス目の位置）
 int ex = 6, ey = 13; //敵の初期値
+int ea = 0;
 int powerMode = 0;
 int powerStartTime = 0;
 
@@ -93,6 +94,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		drawBoard();
 		drawCharacter(x, y, a, handle);
+		drawteki(ex, ey, ea, teki);
 
 		// ==== タイマー表示 ====
 		DrawFormatString(10, 10, GetColor(255, 255, 255),
