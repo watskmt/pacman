@@ -278,15 +278,14 @@ void moveCharacter(int key, int* x, int* y, int* a, int* itemCount)
 	/* 敵との当たり判定 */
 	if (*x == ex && *y == ey) {
 
-		life--;
-		*x = startX;
-		*y = startY;
-		*a = 0;
+		
+		
 		if (powerMode) {/*パワーモード中は敵を初期値に戻す*/
 			ex = 6;
 			ey = 13;
 		}
 		else {/*それ以外はプレイヤーが初期値に戻る*/
+			life--;
 			*x = startX;
 			*y = startY;
 			*a = 0;
