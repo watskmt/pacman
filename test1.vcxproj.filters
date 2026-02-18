@@ -23,5 +23,14 @@
     <Image Include="chara1.png">
       <Filter>リソース ファイル</Filter>
     </Image>
+    <Image Include="item_power.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="item_small.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="teki.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
   </ItemGroup>
 </Project>

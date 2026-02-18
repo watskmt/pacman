@@ -83,6 +83,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	int handle = LoadGraph("chara1.png");
 	startTime = GetNowCount();
 	int teki = LoadGraph("teki.png");
+
+	int bgm = LoadSoundMem("bgm.mp3"); // BGM
+	ChangeVolumeSoundMem(255 * 30 / 100, bgm);
+	PlaySoundMem(bgm, DX_PLAYTYPE_LOOP, TRUE);
+
+	startTime = GetNowCount();
+
 	do {
 		ClearDrawScreen(); // 画面をクリア
 
