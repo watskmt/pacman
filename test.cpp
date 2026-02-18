@@ -11,7 +11,7 @@ int keyCheck(void);
 void moveCharacter(int key, int* x, int* y, int* a, int* itemCount);
 void drawBoard();
 void drawCharacter(int x, int y, int a, int handle);
-void drawteki(int xe, int ye, int ea, int handle);
+void drawteki(int ex, int ey, int handle);
 void initMap(void);
 int getTotalItems(void);
 
@@ -53,7 +53,7 @@ const char level[CELLS][CELLS + 1] = {
 int startX = 1, startY = 2; //　キャラクター初期位置
 int x = startX, y = startY; //　キャラクターの位置（座標ではなく、マス目の位置）
 int ex = 6, ey = 13; //敵の初期値
-int ea = 0;
+int life = 3;
 int powerMode = 0;
 int powerStartTime = 0;
 
@@ -94,7 +94,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		drawBoard();
 		drawCharacter(x, y, a, handle);
-		drawteki(ex, ey, ea, teki);
+		drawteki(ex, ey, teki);
 
 		// ==== タイマー表示 ====
 		DrawFormatString(10, 10, GetColor(255, 255, 255),
@@ -113,6 +113,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			const char* str = "GAME CLEAR!";
 			int w = GetDrawStringWidth(str, strlen(str));
 			DrawString((WINDOWSIZE - w) / 2, (WINDOWSIZE - 64) / 2, str, GetColor(255, 255, 0));
+			ScreenFlip();
+			break;
+		}
+
+		if (life == 0) {	//ゲームオーバー判定
+			SetFontSize(64);
+			const char* str = "GAME OVER!";
+			int w = GetDrawStringWidth(str, strlen(str));
+			DrawString((WINDOWSIZE - w) / 2, (WINDOWSIZE - 64) / 2, str, GetColor(255, 0, 0));
 			ScreenFlip();
 			break;
 		}
@@ -185,10 +194,8 @@ void drawCharacter(int x, int y, int a, int handle) {
 	int turn = a == 2 ? TRUE : FALSE; // 左向きのときだけ反転
 	DrawRotaGraph3(x * CELLSIZE + CELLSIZE / 2, y * CELLSIZE + CELLSIZE / 2, 150, 150, (double)CELLSIZE / 300, (double)CELLSIZE / 300, rad, handle, TRUE, turn);
 }
-void drawteki(int xe, int ye, int a, int handle) {
-	double rad = a == 2 ? 0 : (double)a * PI / 2.0;
-	int turn = a == 2 ? TRUE : FALSE; // 左向きのときだけ反転
-	DrawRotaGraph3(xe * CELLSIZE + CELLSIZE / 2, ye * CELLSIZE + CELLSIZE / 2, 150, 150, (double)CELLSIZE / 400, (double)CELLSIZE / 400, rad, handle, TRUE, turn);
+void drawteki(int xe, int ye, int handle) {
+	DrawRotaGraph3(xe * CELLSIZE + CELLSIZE / 2, ye * CELLSIZE + CELLSIZE / 2, 512, 512, (double)CELLSIZE / 500, (double)CELLSIZE / 500, 0, handle, TRUE, 0);
 }
 
 // 戻り値：　０：押されていない、1：上、2：下、3：左、4：右
@@ -270,6 +277,11 @@ void moveCharacter(int key, int* x, int* y, int* a, int* itemCount)
 	}
 	/* 敵との当たり判定 */
 	if (*x == ex && *y == ey) {
+
+		life--;
+		*x = startX;
+		*y = startY;
+		*a = 0;
 		if (powerMode) {/*パワーモード中は敵を初期値に戻す*/
 			ex = 6;
 			ey = 13;
