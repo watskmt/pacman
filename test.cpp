@@ -101,7 +101,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		if (remainTime < 0) remainTime = 0;
 
 		drawBoard();
-		drawteki(ex, ey, edir, teki);
 		drawCharacter(x, y, a, handle);
 		drawteki(ex, ey, teki);
 
