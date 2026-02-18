@@ -1,4 +1,5 @@
 ﻿#include "DxLib.h"
+#include <time.h>
 
 typedef enum {
 	CELL_PATH = 0,
@@ -61,6 +62,7 @@ int powerStartTime = 0;
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
 	initMap();
+	srand((unsigned int)time(NULL));
 
 	if (DxLib_Init() == -1)		// ＤＸライブラリ初期化処理
 	{
@@ -77,12 +79,18 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	int x = 1, y = 2; //　キャラクターの位置（座標ではなく、マス目の位置）
 	int a = 0; // 0:右、1:下、2:左、3:上
+	int edir = 0; // 0:右 1:下 2:左 3:上 敵の方向
 
 	int itemCount = getTotalItems(); // マップ内に配置されたアイテムの総数を取得
 
 	int handle = LoadGraph("chara1.png");
 	startTime = GetNowCount();
 	int teki = LoadGraph("teki.png");
+
+	int enemyLastMoveTime = 0;
+
+
+
 	do {
 		ClearDrawScreen(); // 画面をクリア
 
@@ -132,12 +140,41 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		ProcessMessage();        // メッセージ処理
 
 
+		if (now - enemyLastMoveTime > 300) {
+			enemyLastMoveTime = now;
+
+			int nx = ex;
+			int ny = ey;
+
+			// 今の方向に進む
+			switch (edir) {
+			case 0: nx++; break;
+			case 1: ny++; break;
+			case 2: nx--; break;
+			case 3: ny--; break;
+			}
+
+			// 進めなかったら方向変更
+			if (nx < 0 || nx >= CELLS || ny < 0 || ny >= CELLS ||
+				board[nx][ny] == CELL_WALL) {
+
+				edir = rand() % 4;
+			}
+			else {
+				ex = nx;
+				ey = ny;
+			}
+		}
+
 		if (powerMode) {
 			if (GetNowCount() - powerStartTime > 10000) {
 				powerMode = 0;
 			}
 		}
+		ScreenFlip();
 	} while (!CheckHitKey(KEY_INPUT_ESCAPE));
+
+
 
 		WaitKey();				// キー入力待ち
 
@@ -291,6 +328,7 @@ void moveCharacter(int key, int* x, int* y, int* a, int* itemCount)
 			*y = startY;
 			*a = 0;
 		}
+
 
 	}
 
