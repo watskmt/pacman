@@ -3,7 +3,8 @@
 typedef enum {
 	CELL_PATH = 0,
 	CELL_WALL = 1,
-	CELL_ITEM = 2
+	CELL_ITEM = 2,
+	CELL_POWER = 3
 } CellType;
 
 int keyCheck(void);
@@ -28,16 +29,16 @@ CellType board[CELLS][CELLS] = { CELL_PATH };
 
 const char level[CELLS][CELLS + 1] = {
 	"##########..########",
-	"#...#.*............#",
+	"#p..#.*............#",
 	"#...#..............#",
 	"#...############...#",
 	"#..............#...#",
 	"#.....*........#...#",
 	"#..................#",
 	"#...##########.....#",
-	"#..................#",
+	"#.................p#",
 	".....###..*.........",
-	"....................",
+	".........p..........",
 	"#.....*............#",
 	"#...####....####...#",
 	"#..#.....##.....#..#",
@@ -45,7 +46,7 @@ const char level[CELLS][CELLS + 1] = {
 	"#....#...*....#....#",
 	"#......#.....#.....#",
 	"#.........#........#",
-	"#..............*...#",
+	"#.p............*...#",
 	"##########..########",
 };
 
@@ -53,6 +54,8 @@ int startX = 1, startY = 2; //　キャラクター初期位置
 int x = startX, y = startY; //　キャラクターの位置（座標ではなく、マス目の位置）
 int ex = 6, ey = 13; //敵の初期値
 int life = 3;
+int powerMode = 0;
+int powerStartTime = 0;
 
 // プログラムは WinMain から始まります
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
@@ -127,6 +130,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		moveCharacter(key, &x, &y, &a, &itemCount);
 		ProcessMessage();        // メッセージ処理
+
+
+		if (powerMode) {
+			if (GetNowCount() - powerStartTime > 10000) {
+				powerMode = 0;
+			}
+		}
 	} while (!CheckHitKey(KEY_INPUT_ESCAPE));
 
 		WaitKey();				// キー入力待ち
@@ -143,6 +153,7 @@ void initMap(void) {
 			case '#': board[x][y] = CELL_WALL; break;
 			case '.': board[x][y] = CELL_PATH; break;
 			case '*': board[x][y] = CELL_ITEM; break;
+			case 'p': board[x][y] = CELL_POWER; break;
 			default:  board[x][y] = CELL_PATH; break;
 			}
 		}
@@ -163,6 +174,12 @@ void drawBoard() {
 				c = GetColor(255, 255, 0);          
 				fillFlag = TRUE;
 			}
+
+			else if(board[j][i] == CELL_POWER) {
+				c = GetColor(255, 0, 0);
+				fillFlag = TRUE;
+			}
+
 			else {
 				c = GetColor(50, 50, 100);
 				fillFlag = FALSE;
@@ -245,6 +262,14 @@ void moveCharacter(int key, int* x, int* y, int* a, int* itemCount)
 		*x = prevX;
 		*y = prevY;
 	}
+
+	/*パワーエサの取得*/
+	if (board[*x][*y] == CELL_POWER) {
+		board[*x][*y] = CELL_PATH;
+		powerMode = 1;
+		powerStartTime = GetNowCount();
+	}
+
 	/*アイテム取得の処理*/
 	if (board[*x][*y] == CELL_ITEM) {
 		board[*x][*y] = CELL_PATH;
@@ -257,7 +282,19 @@ void moveCharacter(int key, int* x, int* y, int* a, int* itemCount)
 		*x = startX;
 		*y = startY;
 		*a = 0;
+		if (powerMode) {/*パワーモード中は敵を初期値に戻す*/
+			ex = 6;
+			ey = 13;
+		}
+		else {/*それ以外はプレイヤーが初期値に戻る*/
+			*x = startX;
+			*y = startY;
+			*a = 0;
+		}
+
 	}
+
+
 }
 
 int getTotalItems()
